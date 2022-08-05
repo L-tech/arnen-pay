@@ -34,28 +34,6 @@ contract Depay is AccessControl {
         _setupRole(ADMIN_ROLE, msg.sender);
     }
 
-    function stake(uint256 _amount, address _erc20Contract, address _cErc20Contract) external returns(uint256){
-        Erc20 underlying = Erc20(_erc20Contract);
-
-        // Create a reference to the corresponding cToken contract, like cDAI
-        CErc20 cToken = CErc20(_cErc20Contract);
-
-        // Amount of current exchange rate from cToken to underlying
-        uint256 exchangeRateMantissa = cToken.exchangeRateCurrent();
-        emit MyLog("Exchange Rate (scaled up): ", exchangeRateMantissa);
-
-        // Amount added to you supply balance this block
-        uint256 supplyRateMantissa = cToken.supplyRatePerBlock();
-        emit MyLog("Supply Rate: (scaled up)", supplyRateMantissa);
-
-        // Approve transfer on the ERC20 contract
-        underlying.approve(_cErc20Contract, _amount);
-
-        // Mint cTokens
-        uint mintResult = cToken.mint(_amount);
-        return mintResult;
-
-    }
 
     function commenceDeal(address _talent) external {
         require(depayData.checkDealStatus(msg.sender, _talent), "Deal Not Accepted");
